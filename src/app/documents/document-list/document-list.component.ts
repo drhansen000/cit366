@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Document } from '../document.model';
+import { DocumentService } from '../document.service';
 
 @Component({
   selector: 'cms-document-list',
@@ -13,14 +14,13 @@ export class DocumentListComponent implements OnInit {
     new Document("CIT 425", "CIT 425 - Data Warehousing", "This course defines the theory and practice of data analysis.  The course will compare and contrast the operational and analytical database models.  Students will learn how to define, implement, and query a database warehouse by leveraging sample data warehouses built from Enterprise Resource Planning (ERP) and Customer Resource Management (CRM) solutions.", "https://www.byui.edu/catalog#/courses/Ek1Cix2jW?bc=true&bcCurrent=Data%20Warehousing&bcItemType=Courses", null),
     new Document("CIT 460", "CIT 460 - Enterprise Development", "This course covers the architecture for N-tier applications by focusing on the use of effective design patterns. Different technologies to implement the MVC control pattern will be explored. The J2EE architecture will be covered in depth including Servlets, Java Server Pages, and Enterprise Java Beans. Applications that implement all parts of the MVC pattern will be designed, implemented, and deployed.", "https://www.byui.edu/catalog#/courses/Nkly0slhjZ?bc=true&bcCurrent=Enterprise%20Development&bcItemType=Courses", null),
     new Document("CIT 495", "CIT 495 - Senior Practicum", "This is a capstone experience for the Computer Information Technology major.  There are two options available:  A research paper on a relevant Information Technology topic or participate in service learning.  The purpose of this course is to build on the knowledge that students have learned in the Computer Information Technology major.", "https://www.byui.edu/catalog#/courses/EkzCog3sW?bc=true&bcCurrent=Senior%20Practicum&bcItemType=Courses", null),];
-    @Output() selectedDocumentEvent = new  EventEmitter<Document>();
-  constructor() { }
+  constructor(private documentService: DocumentService) { }
 
   ngOnInit() {
   }
 
   onSelectedDocument(document: Document) {
-    this.selectedDocumentEvent.emit(document);
+    this.documentService.documentSelectedEvent.emit(document);
   }
 
 }
