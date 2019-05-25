@@ -16,7 +16,6 @@ export class ContactService {
     }
 
     getContacts(): Contact[] {
-        console.log(this.contacts);
         return this.contacts.slice();
     }
 
