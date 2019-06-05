@@ -6,10 +6,10 @@ import { MOCKCONTACTS } from './MOCKCONTACTS';
 export class ContactService {
     private contacts: Contact[] = [];
     contactSelectedEvent = new EventEmitter<Contact>();
+    contactsChangedEvent = new EventEmitter<Contact[]>();
 
     constructor() {
         this.contacts = MOCKCONTACTS;
-
     }
 
     ngOnInit() {
@@ -26,5 +26,18 @@ export class ContactService {
             }
         }
         return null;
+    }
+
+    deleteContact(contact: Contact) {
+        if(contact === null) {
+            return;
+        }
+        const pos = this.contacts.indexOf(contact);
+        if(pos < 0) {
+            return;
+        }
+
+        this.contacts.splice(pos, 1);
+        this.contactsChangedEvent.emit(this.contacts.slice());
     }
 }
