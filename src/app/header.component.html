@@ -5,9 +5,9 @@
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li><a (click)='onSelected("documents")'>Documents</a></li>
-        <li><a (click)='onSelected("messages")'>Message</a></li>
-        <li><a (click)='onSelected("contacts")'>Contacts</a></li>
+        <li routerLinkActive="active"><a routerLink="/documents">Documents</a></li>
+        <li routerLinkActive="active"><a routerLink="/messages">Message</a></li>
+        <li routerLinkActive="active"><a routerLink="/contact">Contacts</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown" cmsDropdown>
