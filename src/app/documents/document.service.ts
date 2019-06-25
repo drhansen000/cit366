@@ -17,8 +17,8 @@ import {
 })
 export class DocumentService {
   private documents: Document[] = [];
-  documentSelectedEvent = new EventEmitter < Document > ();
-  documentListChangedEvent = new Subject < Document[] > ();
+  documentSelectedEvent = new EventEmitter<Document>();
+  documentListChangedEvent = new Subject<Document[]>();
   private maxDocumentId: number;
 
   constructor() {
@@ -26,7 +26,7 @@ export class DocumentService {
     this.maxDocumentId = this.getMaxId();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   getMaxId(): number {
     let maxId: number = 0;
@@ -66,8 +66,8 @@ export class DocumentService {
   }
 
   addDocument(newDocument: Document) {
-    if(document === null || document === undefined) {
-        return;
+    if (document === null || document === undefined) {
+      return;
     }
     this.maxDocumentId++;
     newDocument.id = this.maxDocumentId.toString();
@@ -77,13 +77,13 @@ export class DocumentService {
   }
 
   updateDocument(originalDocument: Document, newDocument: Document) {
-    if(originalDocument === null || originalDocument === undefined || newDocument === null || newDocument === undefined) {
-        return;
+    if (originalDocument === null || originalDocument === undefined || newDocument === null || newDocument === undefined) {
+      return;
     }
 
     const pos = this.documents.indexOf(originalDocument);
-    if(pos < 0) {
-        return;
+    if (pos < 0) {
+      return;
     }
 
     newDocument.id = originalDocument.id;

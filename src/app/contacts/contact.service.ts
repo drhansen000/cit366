@@ -19,15 +19,15 @@ import {
 export class ContactService {
   private contacts: Contact[] = [];
   private maxContactId: number;
-  contactSelectedEvent = new EventEmitter < Contact > ();
-  contactListChangedEvent = new Subject < Contact[] > ();
+  contactSelectedEvent = new EventEmitter<Contact>();
+  contactListChangedEvent = new Subject<Contact[]>();
 
   constructor() {
     this.contacts = MOCKCONTACTS;
     this.maxContactId = this.getMaxId();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   getMaxId() {
     let maxId = 0;
@@ -46,7 +46,7 @@ export class ContactService {
   }
 
   getContact(id: string): Contact {
-    for (let contact of this.contacts) {
+    for (const contact of this.contacts) {
       if (contact.id === id) {
         return contact;
       }
@@ -68,29 +68,40 @@ export class ContactService {
   }
 
   addContact(newContact: Contact) {
-    if(newContact === null || newContact === undefined) {
-        return;
+    if (newContact === null || newContact === undefined) {
+      return;
     }
-    const pos = this.maxContactId++;
+    const pos = ++this.maxContactId;
     newContact.id = pos.toString();
     this.contacts.push(newContact);
-    let contactsListClone: Contact[] = this.contacts.slice();
+    const contactsListClone: Contact[] = this.contacts.slice();
     this.contactListChangedEvent.next(contactsListClone);
+    console.log(contactsListClone);
   }
 
   updateContact(originalContact: Contact, newContact: Contact) {
-    if(originalContact === null || originalContact === undefined || newContact === null || newContact === undefined) {
-        return;
+    if (originalContact === null || originalContact === undefined || newContact === null || newContact === undefined) {
+      return;
     }
 
-    const pos = this.contacts.indexOf(originalContact);
-    if(pos < 0) {
-        return;
+    const pos = this.findContact(originalContact.id);
+    if (pos < 0) {
+      return;
     }
+
 
     newContact.id = originalContact.id;
     this.contacts[pos] = newContact;
-    let contactsListClone = this.contacts.slice();
+    const contactsListClone = this.contacts.slice();
     this.contactListChangedEvent.next(contactsListClone);
+  }
+
+  findContact(id: string): number {
+    for (let i = 0; i < this.contacts.length; i++) {
+      if (this.contacts[i].id === id) {
+        return i;
+      }
+    }
+    return -1;
   }
 }

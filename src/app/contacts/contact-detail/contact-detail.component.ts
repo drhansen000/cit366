@@ -17,14 +17,14 @@ export class ContactDetailComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(
       (params: Params) => {
-        this.contact = this.contactService.getContact(params["id"]);
+        this.contact = this.contactService.getContact(params.id);
       }
     );
   }
 
   onDelete() {
     this.contactService.deleteContact(this.contact);
-    this.router.navigate(["/contact"]);
+    this.router.navigate(['/contact']);
   }
 
 }
