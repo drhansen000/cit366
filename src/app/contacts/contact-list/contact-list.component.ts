@@ -1,6 +1,7 @@
 import {
   Component,
-  OnInit
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 import {
   Contact
@@ -17,9 +18,10 @@ import {
   templateUrl: './contact-list.component.html',
   styleUrls: ['./contact-list.component.css']
 })
-export class ContactListComponent implements OnInit {
+export class ContactListComponent implements OnInit, OnDestroy {
   contacts: Contact[] = [];
   subscription: Subscription;
+  term: string;
 
   constructor(private contactService: ContactService) {}
 
@@ -35,5 +37,4 @@ export class ContactListComponent implements OnInit {
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
-
 }
