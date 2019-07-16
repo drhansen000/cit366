@@ -41,9 +41,7 @@ export class DocumentService {
       .subscribe(documents => {
         this.documents = documents;
         this.maxDocumentId = this.getMaxId();
-        this.documents = this.documents.sort((currentDocument, nextDocument) => {
-          return currentDocument.name.localeCompare(nextDocument.name);
-        });
+        this.orderDocuments();
         this.documentListChangedEvent.next(this.documents.slice());
       },
         error => {
@@ -90,6 +88,7 @@ export class DocumentService {
     this.http.delete('http://localhost:3000/documents/' + document.id)
     .subscribe((documents: Document[]) => {
       this.documents = documents;
+      this.orderDocuments();
       this.documentListChangedEvent.next(this.documents.slice());
     });
   }
@@ -104,6 +103,7 @@ export class DocumentService {
     this.http.post('http://localhost:3000/documents', newDocument)
     .subscribe((documents: Document[]) => {
       this.documents = documents;
+      this.orderDocuments();
       this.documentListChangedEvent.next(this.documents.slice());
     });
   }
@@ -123,8 +123,14 @@ export class DocumentService {
     this.http.patch('http://localhost:3000/documents/' + originalDocument.id, newDocument)
     .subscribe((documents: Document[]) => {
       this.documents = documents;
+      this.orderDocuments();
       this.documentListChangedEvent.next(this.documents.slice());
     });
   }
 
+  orderDocuments() {
+    this.documents = this.documents.sort((currentDocument, nextDocument) => {
+      return currentDocument.name.localeCompare(nextDocument.name);
+    });
+  }
 }

@@ -42,9 +42,7 @@ export class ContactService {
       .get<Contact[]>('http://localhost:3000/contacts')
       .subscribe(contacts => {
         this.contacts = contacts;
-        this.contacts = this.contacts.sort((currentContact, nextContact) => {
-          return currentContact.name.localeCompare(nextContact.name);
-        });
+        this.orderContacts();
         this.contactListChangedEvent.next(this.contacts.slice());
         if (!this.contactsInitialized) {
           this.contactsInitialized = true;
@@ -90,10 +88,13 @@ export class ContactService {
     if (pos < 0) {
       return;
     }
-
+    this.contacts = this.contacts.sort((currentContact, nextContact) => {
+      return currentContact.name.localeCompare(nextContact.name);
+    });
     this.http.delete('http://localhost:3000/contacts/' + contact.id)
     .subscribe((contacts: Contact[]) => {
       this.contacts = contacts;
+      this.orderContacts();
       this.contactListChangedEvent.next(this.contacts.slice());
     });
   }
@@ -114,6 +115,7 @@ export class ContactService {
     this.http.post('http://localhost:3000/contacts', newContact)
     .subscribe((contacts: Contact[]) => {
       this.contacts = contacts;
+      this.orderContacts();
       this.contactListChangedEvent.next(this.contacts.slice());
     });
   }
@@ -133,6 +135,7 @@ export class ContactService {
     this.http.patch('http://localhost:3000/contacts/' + originalContact.id, newContact)
     .subscribe((contacts: Contact[]) => {
       this.contacts = contacts;
+      this.orderContacts();
       this.contactListChangedEvent.next(this.contacts.slice());
     });
   }
@@ -148,5 +151,11 @@ export class ContactService {
 
   getContactsInitialized(): boolean {
     return this.contactsInitialized;
+  }
+
+  orderContacts() {
+    this.contacts = this.contacts.sort((currentContact, nextContact) => {
+      return currentContact.name.localeCompare(nextContact.name);
+    });
   }
 }
