@@ -1,18 +1,15 @@
 import {
   Injectable,
-  EventEmitter,
-  OnInit
+  EventEmitter
 } from '@angular/core';
-import {
-  MOCKDOCUMENTS
-} from './MOCKDOCUMENTS';
 import {
   Document
 } from './document.model';
 import {
   Subject
 } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +37,7 @@ export class DocumentService {
 
   getDocuments() {
     this.http
-      .get<Document[]>('https://cit-366-cms-ef580.firebaseio.com/documents.json')
+      .get<Document[]>('http://localhost:3000/documents')
       .subscribe(documents => {
         this.documents = documents;
         this.maxDocumentId = this.getMaxId();
@@ -63,48 +60,56 @@ export class DocumentService {
     return null;
   }
 
-  storeDocuments() {
-    const documentsString = JSON.stringify(this.documents);
-    this.http
-      .put(
-        'https://cit-366-cms-ef580.firebaseio.com/documents.json',
-        documentsString,
-        { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }
-      )
-      .subscribe(() => {
-          this.documentListChangedEvent.next(this.documents.slice());
-        },
-        error => {
-          console.log(error);
-        }
-      );
-  }
+  // storeDocuments() {
+  //   const documentsString = JSON.stringify(this.documents);
+  //   this.http
+  //     .put(
+  //       'https://cit-366-cms-ef580.firebaseio.com/documents.json',
+  //       documentsString,
+  //       { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }
+  //     )
+  //     .subscribe(() => {
+  //         this.documentListChangedEvent.next(this.documents.slice());
+  //       },
+  //       error => {
+  //         console.log(error);
+  //       }
+  //     );
+  // }
 
   deleteDocument(document: Document) {
-    if (document === null || document === undefined) {
+    if (!document) {
       return;
     }
     const pos = this.documents.indexOf(document);
+    console.log('Removing Document at position ' + pos);
     if (pos < 0) {
       return;
     }
 
-    this.documents.splice(pos, 1);
-    this.storeDocuments();
+    this.http.delete('http://localhost:3000/documents/' + document.id)
+    .subscribe((documents: Document[]) => {
+      this.documents = documents;
+      this.documentListChangedEvent.next(this.documents.slice());
+    });
   }
 
   addDocument(newDocument: Document) {
-    if (document === null || document === undefined) {
+    if (!newDocument) {
       return;
     }
-    this.maxDocumentId++;
-    newDocument.id = this.maxDocumentId.toString();
-    this.documents.push(newDocument);
-    this.storeDocuments();
+
+    newDocument.id = '';
+
+    this.http.post('http://localhost:3000/documents', newDocument)
+    .subscribe((documents: Document[]) => {
+      this.documents = documents;
+      this.documentListChangedEvent.next(this.documents.slice());
+    });
   }
 
   updateDocument(originalDocument: Document, newDocument: Document) {
-    if (originalDocument === null || originalDocument === undefined || newDocument === null || newDocument === undefined) {
+    if (!originalDocument || !newDocument) {
       return;
     }
 
@@ -114,8 +119,12 @@ export class DocumentService {
     }
 
     newDocument.id = originalDocument.id;
-    this.documents[pos] = newDocument;
-    this.storeDocuments();
+
+    this.http.patch('http://localhost:3000/documents/' + originalDocument.id, newDocument)
+    .subscribe((documents: Document[]) => {
+      this.documents = documents;
+      this.documentListChangedEvent.next(this.documents.slice());
+    });
   }
 
 }

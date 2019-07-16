@@ -7,7 +7,6 @@ import { ContactService } from '../contacts/contact.service';
 @Injectable({ providedIn: 'root' })
 export class MessageService {
   private messages: Message[] = [];
-  private maxMessageId: number;
   messageListChangedEvent = new EventEmitter<Message[]>();
 
   constructor(private http: HttpClient, private contactService: ContactService) {
@@ -41,10 +40,9 @@ export class MessageService {
 
   getMessages() {
     this.http
-      .get<Message[]>('https://cit-366-cms-ef580.firebaseio.com/messages.json')
+      .get<Message[]>('http://localhost:3000/messages')
       .subscribe(messages => {
         this.messages = messages;
-        this.maxMessageId = this.getMaxId();
         this.messageListChangedEvent.next(this.messages.slice());
       },
         error => {
@@ -61,25 +59,28 @@ export class MessageService {
     return null;
   }
 
-  storeMessages() {
-    const messagesString = JSON.stringify(this.messages);
-    this.http
-      .put(
-        'https://cit-366-cms-ef580.firebaseio.com/messages.json',
-        messagesString,
-        { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }
-      )
-      .subscribe(() => {
-        this.messageListChangedEvent.next(this.messages.slice());
-      },
-        error => {
-          console.log(error);
-        }
-      );
-  }
+  // storeMessages() {
+  //   const messagesString = JSON.stringify(this.messages);
+  //   this.http
+  //     .put(
+  //       'http://localhost3000/messages',
+  //       messagesString,
+  //       { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }
+  //     )
+  //     .subscribe(() => {
+  //       this.messageListChangedEvent.next(this.messages.slice());
+  //     },
+  //       error => {
+  //         console.log(error);
+  //       }
+  //     );
+  // }
 
-  addMessage(message: Message) {
-    this.messages.push(message);
-    this.storeMessages();
+  addMessage(newMessage: Message) {
+    this.http.post('http://localhost:3000/messages', newMessage)
+    .subscribe((messages: Message[]) => {
+      this.messages = messages;
+      this.messageListChangedEvent.next(this.messages.slice());
+    });
   }
 }
